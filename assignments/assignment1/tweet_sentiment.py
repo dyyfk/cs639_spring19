@@ -32,9 +32,11 @@ def get_tweet_sentiment(tweet, sent_scores):
         """
     score = 0
     sent_scores = sorted(sent_scores.keys(),key=len,reverse = True)
-    for w in tweet.split():
-        if w in sent_scores.keys():
-            score += sent_scores[w]
+    for k in sent_scores.split('\n'):
+        print(k)
+#        if k in tweet:
+#            score += sent_scores[k]
+#            w.replace()
             
 	
     return score
