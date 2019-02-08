@@ -1,5 +1,5 @@
 import sys
-
+import re
 
 def create_sent_dict(sentiment_file):
     """A function that creates a dictionary which contains terms as keys and their sentiment score as value
@@ -31,14 +31,13 @@ def get_tweet_sentiment(tweet, sent_scores):
                 score (numeric): The sentiment score of the tweet
         """
     score = 0
-    sent_scores = sorted(sent_scores.keys(),key=len,reverse = True)
-    for k in sent_scores.split('\n'):
-        print(k)
-#        if k in tweet:
-#            score += sent_scores[k]
-#            w.replace()
-            
-	
+    od = sorted(sent_scores.keys(),key=len,reverse = True)
+    for k in od:        
+        if re.search(r'\b'+k+r'\b',tweet):
+            score += sent_scores[k]
+            str_text = '\\b' + k+ '\\b'
+            tweet = re.sub(str_text,'',tweet)
+            	
     return score
 
 

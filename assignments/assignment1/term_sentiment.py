@@ -1,4 +1,5 @@
 import sys
+import re
 
 def create_sent_dict(sentiment_file):
     """A function that creates a dictionary which contains terms as keys and their sentiment score as value
@@ -38,6 +39,16 @@ def get_tweet_sentiment(tweet, sent_scores):
     
     return score
 
+def search(text,n,target):
+    '''Searches for text, and retrieves n words either side of the text, which are retuned seperatly'''
+    word = r"\W*([\w]+)"
+    groups = re.search(r'{}\W*{}{}'.format(word*n,target,word*n), text).groups() if re.search(r'{}\W*{}{}'.format(word*n,target,word*n), text) else None
+    if groups is not None:
+        return groups[:n],groups[n:]
+    else:
+        return None
+
+
 def term_sentiment(sent_scores, tweets_file):
     """A function that creates a dictionary which contains terms as keys and their sentiment score as value
 
@@ -54,20 +65,24 @@ def term_sentiment(sent_scores, tweets_file):
         tweets = list(f)
 #    sent_scores.sort(key=len, reverse = True)
     sortedList = sorted(sent_scores.keys(),key=len,reverse = True)
-    print (sortedList)
     for line in tweets:
-        if len(line) is 1: #empty line
+        if len(line) is 0: #empty line
             continue
-#        wordArr = line.split()
-#        for k in sortedList:
-#            if k in wordArr:
-#                score = sent_scores[k]
-##                line.replace(k,"") # remove that term from line
-#                for i in [x for x in range(-3,3) if x != 0] : # i should not be 0
-#                    if wordArr.index(k) + i >= 0 and wordArr.index(k) + i < len(wordArr) :
-#                        index = wordArr.index(k) + i
-#                        word = wordArr[index]
-#                        if word not in sortedList:
+        for k in sortedList:
+            match = search(line,3,k)
+            if match:
+                score = sent_scores[k]
+                for texts in match:
+                    for word in texts:
+                        words[word] = (3-texts.index(word)) * score
+
+                
+#                search()
+##                for i in [x for x in range(-3,3) if x != 0]: # i should not be 0
+##                    if line.index(k) + i >= 0 and wordArr.index(k) + i < len(wordArr) :
+##                        index = wordArr.index(k) + i
+##                        word = wordArr[index]
+##                        if word not in sortedList:
 #                            if word not in words:
 #                                words[word] = (3-abs(i)) * score
 #                            else:

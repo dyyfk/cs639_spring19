@@ -8,7 +8,7 @@ def preprocess_word(word):
 
     # Convert more than 2 letter repetitions to 2 letter. Example: funnnnny --> funny
 	
-    word = re.sub(r'(.)\1+', r'\1\1', word)
+    word = re.sub(r'([a-zA-Z])\1+', r'\1\1', word)
 
     # Remove - & '
     word = re.sub(r"[&']",'',word)
@@ -69,6 +69,9 @@ def preprocess_tweet(tweet):
             processed_tweet.append(word)
 
     return ' '.join(processed_tweet)
+
+def searchWordBoundary(line, word):
+    
 
 
 def preprocess_json(json_file_name, processed_file_name):
