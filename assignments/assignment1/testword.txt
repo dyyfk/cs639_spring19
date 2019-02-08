@@ -1,0 +1,5 @@
+good	2
+not good	-2
+not so	-1
+so good	3
+not so good	-10
