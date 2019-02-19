@@ -20,7 +20,7 @@ def create_sent_dict(sentiment_file):
     return scores
 
 
-def get_tweet_sentiment(tweet, sent_scores):
+def get_tweet_sentiment(tweets, sent_scores):
     """A function that find the sentiment of a tweet and outputs a sentiment score.
 
             Args:
@@ -31,12 +31,14 @@ def get_tweet_sentiment(tweet, sent_scores):
                 score (numeric): The sentiment score of the tweet
         """
     score = 0
+
     od = sorted(sent_scores.keys(),key=len,reverse = True)
-    for k in od:        
-        if re.search(r'\b'+k+r'\b',tweet):
-            score += sent_scores[k]
-            str_text = '\\b' + k+ '\\b'
-            tweet = re.sub(str_text,'',tweet)
+    for tweet in tweets.split('\n'):
+        for k in od:
+            if re.search(r'\b'+k+r'\b',tweet):
+                score += sent_scores[k]
+                str_text = '\\b' + k+ '\\b'
+                tweet = re.sub(str_text,'',tweet)
             	
     return score
 
@@ -58,7 +60,7 @@ def get_sentiment(tweets_file, sent_scores, output_file):
         score = get_tweet_sentiment(tweet, sent_scores)
         output.write('%d\n' % score)
     output.close()
-    tweets.close()
+    tweets.close()	
 
 
 def main():

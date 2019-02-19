@@ -39,16 +39,6 @@ def get_tweet_sentiment(tweet, sent_scores):
     
     return score
 
-def search(text,n,target):
-    '''Searches for text, and retrieves n words either side of the text, which are retuned seperatly'''
-    word = r"\W*([\w]+)"
-    groups = re.search(r'{}\W*{}{}'.format(word*n,target,word*n), text).groups() if re.search(r'{}\W*{}{}'.format(word*n,target,word*n), text) else None
-    if groups is not None:
-        return groups[:n],groups[n:]
-    else:
-        return None
-
-
 def term_sentiment(sent_scores, tweets_file):
     """A function that creates a dictionary which contains terms as keys and their sentiment score as value
 
@@ -60,66 +50,27 @@ def term_sentiment(sent_scores, tweets_file):
             """
     new_term_sent = {}
     
-    words = {}
+    counter = {}
     with open(tweets_file) as f:
         tweets = list(f)
-#    sent_scores.sort(key=len, reverse = True)
-    sortedList = sorted(sent_scores.keys(),key=len,reverse = True)
-    for line in tweets:
-        if len(line) is 0: #empty line
-            continue
-        for k in sortedList:
-            match = search(line,3,k)
+    
+    od = sorted(sent_scores.keys(),key=len,reverse = True)
+    for tweet in tweets:
+        score = 0
+        for k in od:
+            match = re.search(r'\b'+k+r'\b',tweet)
             if match:
-                score = sent_scores[k]
-                for texts in match:
-                    for word in texts:
-                        words[word] = (3-texts.index(word)) * score
+                score += sent_scores[k]
+                str_text = '\\b' + k+ '\\b'
+                tweet = tweet.replace(match[0],'');
+        for term in tweet.split():
+            if term in new_term_sent.keys():
+                new_term_sent[term] = (new_term_sent[term] * counter[term] + score)/(counter[term]+1)
+                counter[term] += 1
+            else:
+                new_term_sent[term] = score
+                counter[term] = 1
 
-                
-#                search()
-##                for i in [x for x in range(-3,3) if x != 0]: # i should not be 0
-##                    if line.index(k) + i >= 0 and wordArr.index(k) + i < len(wordArr) :
-##                        index = wordArr.index(k) + i
-##                        word = wordArr[index]
-##                        if word not in sortedList:
-#                            if word not in words:
-#                                words[word] = (3-abs(i)) * score
-#                            else:
-#                                words[word] = (3-abs(i)) * score + words[word] # update from the old score
-#            print(words)
-        
-        
-        
-#    for k,v in words.items():
-#        print(k + ":" +str(v))
-                        
-                    
-                
-
-                
-                
-
-#            if k in line:
-#                print(k)
-
-#        words = line.split()
-#        for w in words:
-#            if w in sent_scores.keys():  
-#                new_term_sent[w] = sent_scores[w]
-#            else:
-#                score = 0
-#                for i in range (-3,3):
-#                    if words.index(w) + i >= 0 and words.index(w) + i < len(words):
-#                        index = words.index(w) + i
-#                        if words[index] in sent_scores.keys():
-#                            score += sent_scores[index]
-                    
-                    
-#            new_term_sent[w] = score
-            
-    for k,v in new_term_sent.items():
-        print(k + " " + str(v))
     
     return new_term_sent
 
