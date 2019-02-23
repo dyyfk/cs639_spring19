@@ -20,11 +20,11 @@
     <student>
         <name>
             <!-- Insert your full name on the line below. -->
-            
+            Ruoyu He
         </name>
         <sunet>
             <!-- Insert your UWNet ID (NOT your student ID number!) below. -->
-
+            rhe33
         </sunet>
     </student>
 
@@ -32,7 +32,7 @@
     <!-- BEGIN PROBLEM 1 -->
     <answer number="1a">
         <!-- Paste your solution to problem 1, part (a) below this line. --><![CDATA[
-
+        SELECT c.ind as i, temp.j as j, temp.val as val FROM c, (SELECT c.ind as i1, A.val, A.j FROM c, A WHERE A.i = c.pi) temp WHERE temp.i1 = c.pi
 
 
         ]]><!-- End problem 1, part (a). -->
@@ -40,13 +40,13 @@
     <answer number="1b">
         <!-- Paste your solution to problem 1, part (b) below this line. --><![CDATA[
 
-
+SELECT c.ind as i, temp.j as j, temp.val as val FROM c, (SELECT c.ind as i1, A.val, A.j FROM c, A WHERE A.i = c.pi) temp WHERE temp.i1 = c.pi
 
         ]]><!-- End problem 1, part (b). -->
     </answer>
     <answer number="1c">
         <!-- Paste your solution to problem 1, part (c) below this line. --><![CDATA[
-
+SELECT c.ind as i, temp.j as j, temp.val as val FROM c, (SELECT c.ind as i1, A.val, A.j FROM c, A WHERE A.i = c.pi) temp WHERE temp.i1 = c.pi
 
 
         ]]><!-- End problem 1, part (c). -->
@@ -54,7 +54,7 @@
     <answer number="1d">
         <!-- Paste your solution to problem 1, part (d) below this line. --><![CDATA[
 
-
+select b.i, b.j, max(a.val) as val from a, a as b where a.i=b.i and a.j=b.j or a.i=b.i-1 and a.j=b.j or a.i=b.i+1 and a.j=b.j or a.i=b.i and a.j=b.j-1 or a.i=b.i and a.j=b.j+1 group by b.i, b.j;
 
         ]]><!-- End problem 1, part (d). -->
     </answer>
@@ -65,14 +65,25 @@
     <answer number="2a">
         <!-- Paste your solution to problem 2, part (a) below this line. --><![CDATA[
 
-
+Select region, count(state) as num_state_winners
+from energy
+where solar = (select max(solar) from energy) or
+wind = (select max(wind) from energy) or
+hydro  = (select max(hydro) from energy) or
+nuclear = (select max(nuclear) from energy)
+group by region
+order by count(state) desc
 
         ]]><!-- End problem 2, part (a). -->
     </answer>
     <answer number="2b">
         <!-- Paste your solution to problem 2, part (b) below this line. --><![CDATA[
 
-
+Select state, solar, wind
+from energy
+where solar = (select max(solar) from energy) or
+wind = (select max(wind) from energy)
+order by wind+solar desc
 
         ]]><!-- End problem 2, part (b). -->
     </answer>
@@ -82,7 +93,10 @@
     <!-- BEGIN PROBLEM 3 -->
     <answer number="3a">
         <!-- Paste your solution to problem 3, part (a) below this line. --><![CDATA[
-
+select x.i, SUM(X.val * MODEL.val) as val
+from X inner join Model on X.j = MODEL.j
+group by X.i
+LIMIT 5;
 
 
         ]]><!-- End problem 3, part (a). -->
@@ -90,6 +104,10 @@
     <answer number="3b">
         <!-- Paste your solution to problem 3, part (b) below this line. --><![CDATA[
 
+DROP view IF EXISTS PREDICTION;
+create view PREDICTION as
+select i, CASE when val > 0 then 1 else 0 end val
+from ANSWER_P3a 
 
 
         ]]><!-- End problem 3, part (b). -->
@@ -97,7 +115,10 @@
     <answer number="3c">
         <!-- Paste your solution to problem 3, part (c) below this line. --><![CDATA[
 
-
+select distinct (select count(label) as count
+from (select * from iris) y, ANSWER_P3b ans
+where y.label =ans.val and ans.i = y.i)/ cast ((select count(i) from iris) as float) as accuracy
+from iris
 
         ]]><!-- End problem 3, part (c). -->
     </answer>
