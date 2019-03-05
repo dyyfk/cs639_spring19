@@ -11,25 +11,35 @@ mr = MapReduce.MapReduce()
 # Do not modify above this line
 
 # Implement the MAP function
+
+
 def mapper(rec):
-  mr.emit_intermediate(rec[1], rec)
+    mr.emit_intermediate(rec[1], rec)
 
 # Implement the REDUCE function
+
+
 def reducer(key, list_of_values):
-  a = []
-  for i in list_of_values:
-    if(i[0]=='line_item'):
-      
+    left = []
+    right = []
+    for v in list_of_values:
+        for j in v:
+            if(j == 'order'):
+                left.append(v)
+            if(j == 'line_item'):
+                right.append(v)
+    for i in left:
+        for j in right:
+            res = []
+            for k in i:
+                res.append(k)
+            for m in j:
+                res.append(m)
+            mr.emit(res)
 
-      
-    else:
-      a.append(i)
-
-    # for j in i:
-    # mr.emit(a) 
 
 # Do not modify below this line
 # =============================
 if __name__ == '__main__':
-  inputdata = open(sys.argv[1])
-  mr.execute(inputdata, mapper, reducer)
+    inputdata = open(sys.argv[1])
+    mr.execute(inputdata, mapper, reducer)
