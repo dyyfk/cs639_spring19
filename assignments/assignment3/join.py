@@ -23,11 +23,10 @@ def reducer(key, list_of_values):
     left = []
     right = []
     for v in list_of_values:
-        for j in v:
-            if(j == 'order'):
-                left.append(v)
-            if(j == 'line_item'):
-                right.append(v)
+        if v[0] == 'order':
+            left.append(v)
+        if v[0] == 'line_item':
+            right.append(v)
     for i in left:
         for j in right:
             res = []
