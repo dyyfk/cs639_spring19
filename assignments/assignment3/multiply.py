@@ -18,21 +18,28 @@ def mapper(rec):
         i = rec[1]
         val = rec[3]
         for j in range(5):
-            mr.emit_intermediate((i, j), val)
+            mr.emit_intermediate((i, j), ['a', val])
     else:
         j = rec[2]
         val = rec[3]
         for i in range(5):
-            mr.emit_intermediate((i, j), val)
+            mr.emit_intermediate((i, j), ['b', val])
 
         # Implement the REDUCE function
 
 
 def reducer(key, list_of_values):
+    a = []
+    b = []
+    for v in list_of_values:
+        if v[0] == 'a':
+            a.append(v[1])
+        else:
+            b.append(v[1])
+
     sum = 0
     for i in range(5):
-        j = i + 5
-        sum += list_of_values[i] * list_of_values[j]
+        sum += a[i] * b[i]
     mr.emit([key[0], key[1], sum])
 
     # Do not modify below this line
