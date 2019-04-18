@@ -11,6 +11,9 @@ import warnings
 warnings.filterwarnings("ignore")
 
 
+# I used the model found on this website
+# https://www.kaggle.com/uciml/mushroom-classification/kernels?sortBy=hotness&group=everyone&pageSize=20&datasetId=478&language=Python&tagIds=16003
+
 def training(file, test):
 
     # ------ Training -------
@@ -62,20 +65,17 @@ def training(file, test):
     res = pd.DataFrame()
 
     for i in range(22):
-        # transforming the columns using One hot encoder
+        # Here we do not fit_transform since it is the test data
         Xtemp_i = pd.DataFrame(ohc[Xfit.columns[i]].transform(
             Xfit.iloc[:, i:i+1]).toarray())
 
-        # Naming the columns as per label encoder
         ohc_obj = ohc[Xfit.columns[i]]
         labelEncoder_i = d[Xfit.columns[i]]
         Xtemp_i.columns = Xfit.columns[i]+"_" + \
             labelEncoder_i.inverse_transform(ohc_obj.active_features_)
 
-        # taking care of dummy variable trap
         X_ohc_i = Xtemp_i.iloc[:, 1:]
 
-        # appending the columns to final dataframe
         res = pd.concat([res, X_ohc_i], axis=1)
 
     y_pred = classifier.predict(res)
